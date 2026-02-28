@@ -110,6 +110,12 @@ Any app that integrates with Windows media controls:
 - Icon name must match exactly (e.g., `youtube_music`)
 - Wait 5-10 minutes after uploading for Discord to propagate
 
+## Disclaimer
+
+This project uses Discord's official [Rich Presence API](https://discord.com/developers/docs/rich-presence/overview), which is designed and documented for exactly this type of use. It is **not** a selfbot, does not violate Discord's Terms of Service, and does not modify the Discord client.
+
+YouTube Music, Apple Music, and Tidal are trademarks of their respective owners (Google LLC, Apple Inc., and TIDAL Music AS). This project is not affiliated with, endorsed by, or sponsored by any of these companies. Logos are used solely to indicate the source of currently playing media.
+
 ## License
 
 MIT
