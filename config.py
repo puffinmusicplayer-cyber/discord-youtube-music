@@ -7,7 +7,7 @@ That file is gitignored and won't be committed.
 
 # Default values (override in config.local.py)
 DISCORD_CLIENT_ID = "YOUR_CLIENT_ID_HERE"
-POLL_INTERVAL = 5
+POLL_INTERVAL = 3  # Check every 3 seconds (balance between responsive and stable)
 LASTFM_API_KEY = None
 FORCE_APP_ICON = "youtube_music"
 MUSIC_APPS = [

@@ -1,36 +1,36 @@
-# Discord Music Rich Presence
+# Discord YouTube Music Rich Presence
 
-Show what you're listening to on Discord - works with **YouTube Music**, **Apple Music**, **Tidal**, and any media player that integrates with Windows media controls.
+Show what you're listening to on Discord with **YouTube Music**!
+
+> **Want Apple Music or Tidal support?** Star this repo! At 50 stars I'll add Apple Music, at 100 stars I'll add Tidal.
 
 ## Features
 
-- **"Listening to"** status (like Spotify)
-- **Album artwork** automatically fetched from iTunes/MusicBrainz
-- **Progress bar** with elapsed/remaining time
-- **App icon** (YouTube Music, Apple Music, Tidal logos)
-- **Works with any media player** that uses Windows media controls
+- **"Listening to YouTube Music"** status (like Spotify)
+- **Album artwork** automatically fetched
+- **YouTube Music logo** overlay on album art
+- **Pause detection** - shows when you're paused
 
 ## Requirements
 
 - Windows 10/11
 - Python 3.9+
 - Discord desktop app
+- YouTube Music (browser or PWA)
 
 ## Quick Setup
 
 ### 1. Create Discord Application
 
 1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
-2. Click **"New Application"** and name it (e.g., "Music", "Now Playing")
+2. Click **"New Application"** and name it **"YouTube Music"**
 3. Copy the **Application ID**
 
-### 2. Upload App Icons (Optional but Recommended)
+### 2. Upload YouTube Music Icon
 
 1. In your Discord app, go to **Rich Presence > Art Assets**
-2. Upload icons with these exact names:
-   - `youtube_music` - [Download](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Youtube_Music_icon.svg/512px-Youtube_Music_icon.svg.png)
-   - `apple_music` - Apple Music logo
-   - `tidal` - Tidal logo
+2. Upload the YouTube Music icon with the name: `youtube_music`
+   - [Download Icon](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Youtube_Music_icon.svg/512px-Youtube_Music_icon.svg.png)
 3. Wait 5-10 minutes for Discord to process
 
 ### 3. Install & Configure
@@ -43,8 +43,8 @@ cd discord-youtube-music
 # Install dependencies
 pip install -r requirements.txt
 
-# Edit config.py and add your Application ID
-# DISCORD_CLIENT_ID = "YOUR_APPLICATION_ID_HERE"
+# Create local config with your Application ID
+echo 'DISCORD_CLIENT_ID = "YOUR_APPLICATION_ID_HERE"' > config_local.py
 ```
 
 ### 4. Run
@@ -53,22 +53,15 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Play music and check your Discord profile!
+Play music on YouTube Music and check your Discord profile!
 
 ## Configuration
 
-Edit `config.py`:
+Create `config_local.py` (gitignored):
 
 ```python
 # Your Discord Application ID
 DISCORD_CLIENT_ID = "123456789012345678"
-
-# How often to check for song changes (seconds)
-POLL_INTERVAL = 5
-
-# Force a specific app icon (always show YouTube Music, etc.)
-# Options: "youtube_music", "apple_music", "tidal", "spotify", or None
-FORCE_APP_ICON = "youtube_music"
 
 # Optional: Last.fm API key for better album art matching
 # Get one free at: https://www.last.fm/api/account/create
@@ -77,21 +70,9 @@ LASTFM_API_KEY = None
 
 ## How It Works
 
-1. **Media Detection**: Uses Windows Media Session API to detect what's playing
+1. **Media Detection**: Uses Windows Media Session API to detect YouTube Music
 2. **Album Art**: Fetches artwork from iTunes Search API (free, no key needed)
 3. **Discord RPC**: Updates your Discord status via Rich Presence
-
-## Supported Music Apps
-
-Any app that integrates with Windows media controls:
-- YouTube Music (browser or desktop app)
-- Apple Music
-- Tidal
-- Spotify (though Spotify has its own integration)
-- Deezer
-- Amazon Music
-- Web browsers playing audio
-- And more...
 
 ## Troubleshooting
 
@@ -101,18 +82,24 @@ Any app that integrates with Windows media controls:
 
 **Album art not showing**
 - Some songs may not be found in iTunes database
-- Add a Last.fm API key in config.py for better results
+- Add a Last.fm API key in config_local.py for better results
 
 **Icon not showing**
 - Make sure you uploaded the icon to Discord Developer Portal
-- Icon name must match exactly (e.g., `youtube_music`)
+- Icon name must be exactly `youtube_music`
 - Wait 5-10 minutes after uploading for Discord to propagate
+
+## Roadmap
+
+- [x] YouTube Music support
+- [ ] Apple Music support (at 50 stars)
+- [ ] Tidal support (at 100 stars)
 
 ## Disclaimer
 
-This project uses Discord's official [Rich Presence API](https://discord.com/developers/docs/rich-presence/overview), which is designed and documented for exactly this type of use. It is **not** a selfbot, does not violate Discord's Terms of Service, and does not modify the Discord client.
+This project uses Discord's official [Rich Presence API](https://discord.com/developers/docs/rich-presence/overview). It is **not** a selfbot and does not violate Discord's Terms of Service.
 
-YouTube Music, Apple Music, and Tidal are trademarks of their respective owners (Google LLC, Apple Inc., and TIDAL Music AS). This project is not affiliated with, endorsed by, or sponsored by any of these companies. Logos are used solely to indicate the source of currently playing media.
+YouTube Music is a trademark of Google LLC. This project is not affiliated with or endorsed by Google.
 
 ## License
 

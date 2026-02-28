@@ -68,9 +68,13 @@ async def get_media_info() -> Optional[MediaInfo]:
         try:
             timeline = current.get_timeline_properties()
             # Convert from TimeSpan (100-nanosecond ticks) to seconds
-            position_seconds = timeline.position.duration / 10_000_000
-            duration_seconds = timeline.end_time.duration / 10_000_000
-        except Exception:
+            # position is current playback position
+            # end_time is the total duration of the track
+            if hasattr(timeline.position, 'duration'):
+                position_seconds = timeline.position.duration / 10_000_000
+            if hasattr(timeline.end_time, 'duration'):
+                duration_seconds = timeline.end_time.duration / 10_000_000
+        except Exception as e:
             pass  # Some apps don't provide timeline info
 
         return MediaInfo(

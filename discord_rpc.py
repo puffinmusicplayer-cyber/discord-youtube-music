@@ -19,7 +19,8 @@ class DiscordRPC:
         self.client_id = client_id
         self.rpc: Optional[Presence] = None
         self.connected = False
-        self.last_update = None
+        self.last_update = 0
+        self.min_update_interval = 15  # Discord rate limit
 
     def connect(self) -> bool:
         """
@@ -46,9 +47,10 @@ class DiscordRPC:
         artist: str,
         album: Optional[str] = None,
         art_url: Optional[str] = None,
-        position_seconds: float = 0.0,
-        duration_seconds: float = 0.0,
+        start_timestamp: Optional[int] = None,
+        end_timestamp: Optional[int] = None,
         app_id: str = "",
+        paused: bool = False,
     ) -> bool:
         """
         Update Discord presence with current song.
@@ -58,8 +60,10 @@ class DiscordRPC:
             artist: Artist name
             album: Album name (optional)
             art_url: URL to album art (optional)
-            position_seconds: Current playback position in seconds
-            duration_seconds: Total track duration in seconds
+            start_timestamp: Unix timestamp when song started (for progress bar)
+            end_timestamp: Unix timestamp when song ends (for progress bar)
+            app_id: Source app identifier
+            paused: Whether playback is paused
 
         Returns:
             True if updated successfully, False otherwise
@@ -75,30 +79,24 @@ class DiscordRPC:
                 "state": f"by {artist}"[:128],
             }
 
-            # Add progress bar timestamps if duration is available
-            if duration_seconds > 0:
-                now = time.time()
-                start_timestamp = int(now - position_seconds)
-                end_timestamp = int(now + (duration_seconds - position_seconds))
-                presence_data["start"] = start_timestamp
-                presence_data["end"] = end_timestamp
+            # No timer - disabled for stability
 
-            # Add album art if available
+            # Get app icon - defaults to youtube_music if FORCE_APP_ICON is set
+            app_icon = self._get_app_icon(app_id) or "youtube_music"
+
+            # ALWAYS set large_image (required for small_image to show)
             if art_url:
                 presence_data["large_image"] = art_url
                 if album:
                     presence_data["large_text"] = album[:128]
             else:
-                # Use a default music icon (you can upload one in Discord Developer Portal)
-                presence_data["large_image"] = "music_icon"
-                presence_data["large_text"] = album[:128] if album else "Listening to Music"
+                # No album art - use app icon as large image
+                presence_data["large_image"] = app_icon
+                presence_data["large_text"] = self._get_app_name(app_id, paused)
 
-            # Add small icon based on music app (like Spotify logo)
-            # These need to be uploaded to Discord Developer Portal > Rich Presence > Art Assets
-            small_icon = self._get_app_icon(app_id)
-            if small_icon:
-                presence_data["small_image"] = small_icon
-                presence_data["small_text"] = self._get_app_name(app_id)
+            # ALWAYS set small_image to YouTube Music icon
+            presence_data["small_image"] = app_icon
+            presence_data["small_text"] = self._get_app_name(app_id, paused)
 
             self.rpc.update(**presence_data)
             self.last_update = time.time()
@@ -124,7 +122,7 @@ class DiscordRPC:
 
         try:
             self.rpc.clear()
-            self.last_update = None
+            self.last_update = 0
             return True
         except Exception as e:
             print(f"Error clearing presence: {e}")
@@ -166,8 +164,10 @@ class DiscordRPC:
 
         return None
 
-    def _get_app_name(self, app_id: str) -> str:
+    def _get_app_name(self, app_id: str, paused: bool = False) -> str:
         """Get the display name for a music app."""
+        suffix = " (Paused)" if paused else ""
+
         # Use forced icon name if configured
         if FORCE_APP_ICON:
             icon_names = {
@@ -176,24 +176,24 @@ class DiscordRPC:
                 "tidal": "TIDAL",
                 "spotify": "Spotify",
             }
-            return icon_names.get(FORCE_APP_ICON, "Music Player")
+            return icon_names.get(FORCE_APP_ICON, "Music Player") + suffix
 
         app_id_lower = app_id.lower()
 
         if "youtube" in app_id_lower or "music.ui" in app_id_lower:
-            return "YouTube Music"
+            return "YouTube Music" + suffix
         elif "apple" in app_id_lower or "itunes" in app_id_lower:
-            return "Apple Music"
+            return "Apple Music" + suffix
         elif "tidal" in app_id_lower:
-            return "TIDAL"
+            return "TIDAL" + suffix
         elif "spotify" in app_id_lower:
-            return "Spotify"
+            return "Spotify" + suffix
         elif "chrome" in app_id_lower:
-            return "Chrome"
+            return "Chrome" + suffix
         elif "msedge" in app_id_lower:
-            return "Edge"
+            return "Edge" + suffix
 
-        return "Music Player"
+        return "Music Player" + suffix
 
 
 # Test
@@ -204,11 +204,13 @@ if __name__ == "__main__":
     rpc = DiscordRPC()
     if rpc.connect():
         print("Updating presence with test data...")
+        now = time.time()
         rpc.update(
             title="Test Song",
             artist="Test Artist",
             album="Test Album",
-            start_time=time.time(),
+            start_timestamp=int(now),
+            end_timestamp=int(now + 180),  # 3 minute song
         )
         print("Check your Discord profile! Press Enter to clear and exit.")
         input()
