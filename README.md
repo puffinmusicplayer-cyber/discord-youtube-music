@@ -2,7 +2,12 @@
 
 Show what you're listening to on Discord with **YouTube Music**!
 
-> **Want Apple Music or Tidal support?** Star this repo! At 50 stars I'll add Apple Music, at 100 stars I'll add Tidal.
+> **Want Apple Music or Tidal support?** ⭐ Star this repo! At 50 stars I'll add Apple Music, at 100 stars I'll add Tidal.
+
+<p align="center">
+  <img src="screenshots/discord1.png" width="300" alt="Discord Profile View">
+  <img src="screenshots/discord2.png" width="500" alt="Discord Activity View">
+</p>
 
 ## Features
 
