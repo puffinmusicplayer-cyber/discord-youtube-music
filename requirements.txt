@@ -1,0 +1,5 @@
+pypresence>=4.3.0
+winrt-runtime
+winrt-Windows.Media.Control
+winrt-Windows.Foundation
+requests>=2.28.0
