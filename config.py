@@ -1,28 +1,26 @@
 """
 Discord Music RPC Configuration
+
+For local development, create config.local.py with your actual credentials.
+That file is gitignored and won't be committed.
 """
 
-# Discord Application ID (from https://discord.com/developers/applications)
+# Default values (override in config.local.py)
 DISCORD_CLIENT_ID = "YOUR_CLIENT_ID_HERE"
-
-# How often to check for media changes (seconds)
 POLL_INTERVAL = 5
-
-# Last.fm API key (optional - for album art)
-# Get one free at: https://www.last.fm/api/account/create
-LASTFM_API_KEY = None  # Set to your API key string, e.g., "abc123..."
-
-# Force a specific app icon to always show (overrides auto-detection)
-# Options: "youtube_music", "apple_music", "tidal", "spotify", or None for auto-detect
+LASTFM_API_KEY = None
 FORCE_APP_ICON = "youtube_music"
-
-# Music apps to detect (app ID patterns)
-# These are matched against source_app_user_model_id
 MUSIC_APPS = [
     "AppleInc.AppleMusic",
     "Apple.Music",
     "TIDAL.TIDAL",
-    "chrome",  # YouTube Music in Chrome
-    "msedge",  # YouTube Music in Edge
-    "Music.UI",  # YouTube Music PWA
+    "chrome",
+    "msedge",
+    "Music.UI",
 ]
+
+# Try to load local config (overrides defaults above)
+try:
+    from config_local import *
+except ImportError:
+    pass

@@ -37,4 +37,4 @@ env/
 Thumbs.db
 
 # Local config with your actual credentials (not committed)
-config.local.py
+config_local.py
