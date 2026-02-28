@@ -2,8 +2,6 @@
 
 Show what you're listening to on Discord - works with **YouTube Music**, **Apple Music**, **Tidal**, and any media player that integrates with Windows media controls.
 
-![Example](https://i.imgur.com/example.png)
-
 ## Features
 
 - **"Listening to"** status (like Spotify)
@@ -39,8 +37,8 @@ Show what you're listening to on Discord - works with **YouTube Music**, **Apple
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/discord-music-rpc.git
-cd discord-music-rpc
+git clone https://github.com/puffinmusicplayer-cyber/discord-youtube-music.git
+cd discord-youtube-music
 
 # Install dependencies
 pip install -r requirements.txt
